@@ -1,0 +1,8 @@
+{'DATA_TYPE': 'alarm', 'AGV_NO': 'AGV00002', 'ALARMS': [{'ALARM_CD': '32', 'ALARM_STATUS': 1, 'ALARM_DTL': 'Tray 구동 실패', 'OCCUR_DT': '20211125 01:11:07', 'END_DT': None}]}
+{'DATA_TYPE': 'alarm', 'AGV_NO': 'AGV00002', 'ALARMS': [{'ALARM_CD': '16', 'ALARM_STATUS': 1, 'ALARM_DTL': '후진 후, 위치 오류', 'OCCUR_DT': '20211125 01:11:08', 'END_DT': None}]}
+{'DATA_TYPE': 'alarm', 'AGV_NO': 'AGV00002', 'ALARMS': [{'ALARM_CD': '15', 'ALARM_STATUS': 1, 'ALARM_DTL': '180도 회전 후, 위치 오류', 'OCCUR_DT': '20211125 01:11:09', 'END_DT': None}]}
+{'DATA_TYPE': 'alarm', 'AGV_NO': 'AGV00002', 'ALARMS': [{'ALARM_CD': '22', 'ALARM_STATUS': 1, 'ALARM_DTL': '과전류 발생', 'OCCUR_DT': '20211125 01:11:10', 'END_DT': None}]}
+{'DATA_TYPE': 'alarm', 'AGV_NO': 'AGV00002', 'ALARMS': [{'ALARM_CD': '11', 'ALARM_STATUS': 1, 'ALARM_DTL': '현 위치확인 안됨', 'OCCUR_DT': '20211125 01:11:11', 'END_DT': None}]}
+{'DATA_TYPE': 'alarm', 'AGV_NO': 'AGV00002', 'ALARMS': [{'ALARM_CD': '32', 'ALARM_STATUS': 0, 'ALARM_DTL': 'Tray 구동 실패', 'OCCUR_DT': '20211125 01:11:07', 'END_DT': '20211125 01:11:12'}, {'ALARM_CD': '21', 'ALARM_STATUS': 1, 'ALARM_DTL': 'LOW BATTERY', 'OCCUR_DT': '20211125 01:11:12', 'END_DT': None}]}
+{'DATA_TYPE': 'alarm', 'AGV_NO': 'AGV00002', 'ALARMS': [{'ALARM_CD': '16', 'ALARM_STATUS': 0, 'ALARM_DTL': '후진 후, 위치 오류', 'OCCUR_DT': '20211125 01:11:08', 'END_DT': '20211125 01:11:13'}, {'ALARM_CD': '32', 'ALARM_STATUS': 1, 'ALARM_DTL': 'Tray 구동 실패', 'OCCUR_DT': '20211125 01:11:13', 'END_DT': None}]}
+{'DATA_TYPE': 'alarm', 'AGV_NO': 'AGV00002', 'ALARMS': [{'ALARM_CD': '15', 'ALARM_STATUS': 0, 'ALARM_DTL': '180도 회전 후, 위치 오류', 'OCCUR_DT': '20211125 01:11:09', 'END_DT': '20211125 01:11:14'}, {'ALARM_CD': '31', 'ALARM_STATUS': 1, 'ALARM_DTL': 'Belt 구동 실패', 'OCCUR_DT': '20211125 01:11:14', 'END_DT': None}]}
