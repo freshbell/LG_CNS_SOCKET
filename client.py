@@ -60,18 +60,23 @@ def Send(client_sock):
 def Recv(client_sock): 
     while True:
         recv_data = client_sock.recv(2048).decode() 
-        recv_data = json.loads(recv_data)
-        data_type = recv_data['DATA_TYPE']
         print(recv_data)
-        if data_type == 'moveCommand':
+        try:
+            recv_data = json.loads(recv_data)
+            data_type = recv_data['DATA_TYPE']
+            if data_type == 'moveCommand':
+                pass
+            elif data_type == 'reportRqst':
+                client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())
+        except:
             pass
-        elif data_type == 'reportRqst':
-            client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())
+        
 
 #TCP Client 
 if __name__ == '__main__': 
     argument = sys.argv
     AGV_NO = argument[1]
+    
     Host = argument[2] if len(argument) == 3 else 'localhost'
 
     STATE_JSON['AGV_NO'] = AGV_NO
