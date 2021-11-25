@@ -4,6 +4,7 @@ import json
 import time
 from collections import deque
 import random
+import sys
 
 # JSON 파일 open
 with open('./JSON/client/Report.json', 'r', encoding='UTF-8') as f:
@@ -68,13 +69,22 @@ def Recv(client_sock):
 
 #TCP Client 
 if __name__ == '__main__': 
-    AGV_NO = 'AGV00005'
+    argument = sys.argv
+    AGV_NO = argument[1]
+
+    server = 0
+    if len(argument) == 3:
+        server = argument[2]
 
     STATE_JSON['AGV_NO'] = AGV_NO
     ALARM_REPORT_JSON['AGV_NO'] = AGV_NO
 
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-    Host = 'localhost' 
+    if server == 0:
+        Host = 'localhost' 
+    else:
+        Host = '13.124.72.207'
+        
     Port = 5000
     client_sock.connect((Host, Port))
     print('Connecting to ', Host, Port)
