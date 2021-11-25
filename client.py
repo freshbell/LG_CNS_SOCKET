@@ -58,10 +58,11 @@ def Send(client_sock):
         client_sock.send(send_data)
 
 def Recv(client_sock): 
-    while True: 
+    while True:
         recv_data = client_sock.recv(2048).decode() 
         recv_data = json.loads(recv_data)
         data_type = recv_data['DATA_TYPE']
+        print(recv_data)
         if data_type == 'moveCommand':
             pass
         elif data_type == 'reportRqst':
@@ -71,20 +72,12 @@ def Recv(client_sock):
 if __name__ == '__main__': 
     argument = sys.argv
     AGV_NO = argument[1]
-
-    server = 0
-    if len(argument) == 3:
-        server = argument[2]
+    Host = argument[2] if len(argument) == 3 else 'localhost'
 
     STATE_JSON['AGV_NO'] = AGV_NO
     ALARM_REPORT_JSON['AGV_NO'] = AGV_NO
 
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-    if server == 0:
-        Host = 'localhost' 
-    else:
-        Host = '13.124.72.207'
-        
     Port = 5000
     client_sock.connect((Host, Port))
     print('Connecting to ', Host, Port)

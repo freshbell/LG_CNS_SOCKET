@@ -1,9 +1,11 @@
+from os import system
 import socket 
 import threading 
 from queue import Queue 
 import json
 import time
 import random
+import sys
 
 # JSON 파일 open
 with open('./JSON/server/Request.json', 'r', encoding='UTF-8') as f:
@@ -102,9 +104,11 @@ def input_a():
             break
 
 if __name__ == '__main__': 
+    argument = sys.argv
+    HOST = argument[1] if len(argument) == 2 else ''
+
     send_queue = Queue() 
-    
-    HOST = '0.0.0.0' # 수신 받을 모든 IP를 의미 
+    HOST = '' # 수신 받을 모든 IP를 의미 
     PORT = 5000 # 수신받을 Port 
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP Socket 
     server_sock.bind((HOST, PORT)) # 소켓에 수신받을 IP주소와 PORT를 설정 
