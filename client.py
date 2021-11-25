@@ -77,7 +77,12 @@ if __name__ == '__main__':
     argument = sys.argv
     AGV_NO = argument[1]
     
-    Host = argument[2] if len(argument) == 3 else 'localhost'
+    server = argument[2] if len(argument) == 3 else '0'
+
+    if server == '0':
+        Host = 'localhost'
+    else:
+        Host = '13.124.72.207'
 
     STATE_JSON['AGV_NO'] = AGV_NO
     ALARM_REPORT_JSON['AGV_NO'] = AGV_NO
