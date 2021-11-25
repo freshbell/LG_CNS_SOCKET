@@ -22,6 +22,7 @@ ALARM_REPORT_JSON = {
     'AGV_NO': 'TEMP',
     'ALARMS': []
 }
+cnt = 0
 
 # 랜덤 ALARM_CD
 def random_alarm():
@@ -62,15 +63,34 @@ def Recv(client_sock):
         recv_data = client_sock.recv(2048).decode() 
         print(recv_data)
         try:
-            recv_data = json.loads(recv_data)
+            recv_data = recv_data.split('}')
+            state_data = json.loads(recv_data[0] + '}')
+            move_data = json.loads(recv_data[1] + '}')
+
+            if move_data['DATA_TYPE'] == 'moveCommand':
+                move_avg(move_data)
+
+            if state_data['DATA_TYPE'] == 'reportRqst':
+                client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())
+  
+        except:
+            # 기존 코드
+            '''recv_data = json.loads(recv_data)
             data_type = recv_data['DATA_TYPE']
             if data_type == 'moveCommand':
                 pass
             elif data_type == 'reportRqst':
-                client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())
-        except:
+                client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())'''
             pass
-        
+
+def move_avg(move_data):
+    global cnt    
+
+    length=len(move_data['BLOCKS'])
+    if cnt+1<length: cnt+=1
+    else: cnt=0
+
+    STATE_JSON['LOCATION'] = move_data['BLOCKS'][cnt]
 
 #TCP Client 
 if __name__ == '__main__': 

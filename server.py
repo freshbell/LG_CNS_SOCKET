@@ -30,11 +30,8 @@ def make_route():
     direction_x = [1,0,-1,0]
     direction_y = [0,1,0,-1]
 
-    x = random.sample(range(1, 31),1)[0]
-    y = random.sample(range(1, 31),1)[0]
-    BLOCKS = [str(x).zfill(4) + str(y).zfill(4)]
-
     x, y = random.sample(range(1,31),1)[0], random.sample(range(1,31),1)[0]
+    BLOCKS = [str(x).zfill(4) + str(y).zfill(4)]
     for _ in range(random.sample(range(20, 30),1)[0]):
         while True:
             direction = random.sample(range(0,3),1)[0]
@@ -67,9 +64,7 @@ def Send(group, send_queue):
                 state = json.dumps(STATE_REQUEST,ensure_ascii=False).encode()
                 move = json.dumps(MOVE_JSON, ensure_ascii=False).encode()
 
-                conn.send(state)
-                time.sleep(0.000001)
-                conn.send(move)
+                conn.send(state + move)
         except: 
             pass 
 
