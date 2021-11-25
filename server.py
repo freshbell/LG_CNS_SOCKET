@@ -55,19 +55,17 @@ def Send(group, send_queue):
             if recv == 'Group Changed': 
                 break
 
-            #time.sleep(2)
-            time.sleep(0.05)
+            time.sleep(2)
             for conn in group:
 
-                '''STATE_REQUEST['AGV_NO'] = clients[conn]['AGV_NO']
+                STATE_REQUEST['AGV_NO'] = clients[conn]['AGV_NO']
                 MOVE_JSON['AGV_NO'] = clients[conn]['AGV_NO']
-                MOVE_JSON['BLOCKS'] = clients[conn]['BLOCKS']'''
+                MOVE_JSON['BLOCKS'] = clients[conn]['BLOCKS']
                
                 state = json.dumps(STATE_REQUEST,ensure_ascii=False)
-                conn.send(state.encode())
-
                 move = json.dumps(MOVE_JSON, ensure_ascii=False)
-                conn.send(move.encode())
+                conn.send((state+move).encode())
+
         except: 
             print('fail')
             pass 
@@ -75,18 +73,14 @@ def Send(group, send_queue):
 def Recv(conn, count):
     global clients
 
-    #print('Thread Recv' + str(count) + ' Start') 
-
-    '''
     AGV_NO = conn.recv(2048).decode()
     clients[conn] = {}
     clients[conn]['AGV_NO'] = AGV_NO
     clients[conn]['BLOCKS'] = make_route()
-    '''
+    
     while chk:
         data = conn.recv(2048).decode()
-        print(data)
-        #data = json.loads(data)
+        print(json.loads(data))
         data_type = 'a' #data['DATA_TYPE']
         if data_type == 'alarm':
             alarm_f.write(str(data) + '\n')
