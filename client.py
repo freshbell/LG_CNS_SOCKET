@@ -61,7 +61,6 @@ def Send(client_sock):
 def Recv(client_sock): 
     while True:
         recv_data = client_sock.recv(2048).decode() 
-        print(recv_data)
         try:
             recv_data = recv_data.split('}')
             state_data = json.loads(recv_data[0] + '}')

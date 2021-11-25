@@ -55,35 +55,39 @@ def Send(group, send_queue):
             if recv == 'Group Changed': 
                 break
 
+            #time.sleep(2)
             time.sleep(0.05)
             for conn in group:
-                STATE_REQUEST['AGV_NO'] = clients[conn]['AGV_NO']
+
+                '''STATE_REQUEST['AGV_NO'] = clients[conn]['AGV_NO']
                 MOVE_JSON['AGV_NO'] = clients[conn]['AGV_NO']
-                MOVE_JSON['BLOCKS'] = clients[conn]['BLOCKS']
+                MOVE_JSON['BLOCKS'] = clients[conn]['BLOCKS']'''
+               
+                state = json.dumps(STATE_REQUEST,ensure_ascii=False)
+                conn.send(state.encode())
 
-                state = json.dumps(STATE_REQUEST,ensure_ascii=False).encode()
-                move = json.dumps(MOVE_JSON, ensure_ascii=False).encode()
-
-                conn.send(state + move)
+                move = json.dumps(MOVE_JSON, ensure_ascii=False)
+                conn.send(move.encode())
         except: 
+            print('fail')
             pass 
 
 def Recv(conn, count):
     global clients
 
-    print('Thread Recv' + str(count) + ' Start') 
+    #print('Thread Recv' + str(count) + ' Start') 
 
+    '''
     AGV_NO = conn.recv(2048).decode()
     clients[conn] = {}
     clients[conn]['AGV_NO'] = AGV_NO
     clients[conn]['BLOCKS'] = make_route()
-
+    '''
     while chk:
         data = conn.recv(2048).decode()
-        data = json.loads(data)
-        
-        data_type = data['DATA_TYPE']
-
+        print(data)
+        #data = json.loads(data)
+        data_type = 'a' #data['DATA_TYPE']
         if data_type == 'alarm':
             alarm_f.write(str(data) + '\n')
         elif data_type == 'report':
@@ -112,7 +116,7 @@ if __name__ == '__main__':
 
     thread3 = threading.Thread(target=input_a)
     thread3.start()
-
+    print(1)
     group = [] #연결된 클라이언트의 소켓정보를 리스트로 묶기 위함 
     while chk:
         count = count + 1 
