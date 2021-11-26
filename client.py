@@ -59,30 +59,23 @@ def Send(client_sock):
         client_sock.send(send_data)
 
 def Recv(client_sock): 
+    count = 0
     while True:
         recv_data = client_sock.recv(2048).decode() 
-        try:
-            recv_data = recv_data.split('}')
-            state_data = json.loads(recv_data[0] + '}')
-            move_data = json.loads(recv_data[1] + '}')
 
-            if move_data['DATA_TYPE'] == 'moveCommand':
-                move_avg(move_data)
+        recv_data = recv_data.split('}')
+        state_data = json.loads(recv_data[0] + '}')
+        move_data = json.loads(recv_data[1] + '}')
 
-            if state_data['DATA_TYPE'] == 'reportRqst':
-                client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())
-  
-        except:
-            # 기존 코드
-            '''recv_data = json.loads(recv_data)
-            data_type = recv_data['DATA_TYPE']
-            if data_type == 'moveCommand':
-                pass
-            elif data_type == 'reportRqst':
-                client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())'''
-            pass
+        if move_data['DATA_TYPE'] == 'moveCommand':
+            count = count + 1
+            if count % 10 == 0: # 500msec
+                move_agv(move_data)
 
-def move_avg(move_data):
+        if state_data['DATA_TYPE'] == 'reportRqst':
+            client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())
+
+def move_agv(move_data):
     global cnt    
 
     length=len(move_data['BLOCKS'])
@@ -109,7 +102,6 @@ if __name__ == '__main__':
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     Port = 5000
     client_sock.connect((Host, Port))
-    print('Connecting to ', Host, Port)
     
     send_thread = threading.Thread(target=Send, args=(client_sock, )) 
     send_thread.start()

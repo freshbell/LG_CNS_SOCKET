@@ -39,7 +39,7 @@ def make_route():
                 x, y = x + direction_x[direction], y + direction_y[direction]
                 break
         BLOCKS.append(str(x).zfill(4) + str(y).zfill(4))
-
+    print(BLOCKS)
     return BLOCKS
 
 def Send(group, send_queue):
@@ -55,7 +55,7 @@ def Send(group, send_queue):
             if recv == 'Group Changed': 
                 break
 
-            time.sleep(2)
+            time.sleep(0.05)
             for conn in group:
 
                 STATE_REQUEST['AGV_NO'] = clients[conn]['AGV_NO']
@@ -79,10 +79,11 @@ def Recv(conn, count):
     clients[conn]['BLOCKS'] = make_route()
     
     while chk:
-        data = conn.recv(2048).decode()
-        print(json.loads(data))
-        data_type = 'a' #data['DATA_TYPE']
+        data = json.loads(conn.recv(2048).decode())
+        
+        data_type = data['DATA_TYPE']
         if data_type == 'alarm':
+            print(data)
             alarm_f.write(str(data) + '\n')
         elif data_type == 'report':
             data['TIME'] = time.strftime('20%y%m%d %H%M%S')
