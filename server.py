@@ -39,7 +39,6 @@ def make_route():
                 x, y = x + direction_x[direction], y + direction_y[direction]
                 break
         BLOCKS.append(str(x).zfill(4) + str(y).zfill(4))
-    print(BLOCKS)
     return BLOCKS
 
 def Send(group, send_queue):
@@ -83,7 +82,6 @@ def Recv(conn, count):
         
         data_type = data['DATA_TYPE']
         if data_type == 'alarm':
-            print(data)
             alarm_f.write(str(data) + '\n')
         elif data_type == 'report':
             data['TIME'] = time.strftime('20%y%m%d %H%M%S')
@@ -103,7 +101,7 @@ if __name__ == '__main__':
 
     send_queue = Queue() 
     HOST = '' # 수신 받을 모든 IP를 의미 
-    PORT = 5000 # 수신받을 Port 
+    PORT = 5001 # 수신받을 Port 
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP Socket 
     server_sock.bind((HOST, PORT)) # 소켓에 수신받을 IP주소와 PORT를 설정 
     server_sock.listen(10) # 소켓 연결, 여기서 파라미터는 접속수를 의미 
@@ -111,22 +109,25 @@ if __name__ == '__main__':
 
     thread3 = threading.Thread(target=input_a)
     thread3.start()
-    print(1)
+    
     group = [] #연결된 클라이언트의 소켓정보를 리스트로 묶기 위함 
     while chk:
-        count = count + 1 
-        conn, addr = server_sock.accept() # 해당 소켓을 열고 대기 
-        group.append(conn) #연결된 클라이언트의 소켓정보 
-        print('Connected ' + str(addr)) #소켓에 연결된 모든 클라이언트에게 동일한 메시지를 보내기 위한 쓰레드(브로드캐스트) #연결된 클라이언트가 1명 이상일 경우 변경된 group 리스트로 반영 
         
-        if count > 1: 
-            send_queue.put('Group Changed')
-            thread1 = threading.Thread(target=Send, args=(group, send_queue,)) 
-            thread1.start() 
-            pass 
-        else: 
-            thread1 = threading.Thread(target=Send, args=(group, send_queue,)) 
-            thread1.start() #소켓에 연결된 각각의 클라이언트의 메시지를 받을 쓰레드 
+        if count >= 10:
+            pass
+        else:
+            conn, addr = server_sock.accept() # 해당 소켓을 열고 대기 
+            group.append(conn) #연결된 클라이언트의 소켓정보 
+            count = count + 1
+            print('Connected ' + str(addr)) #소켓에 연결된 모든 클라이언트에게 동일한 메시지를 보내기 위한 쓰레드(브로드캐스트) #연결된 클라이언트가 1명 이상일 경우 변경된 group 리스트로 반영 
+            
+            if count > 1: 
+                send_queue.put('Group Changed')
+                thread1 = threading.Thread(target=Send, args=(group, send_queue,)) 
+                thread1.start()
+            else: 
+                thread1 = threading.Thread(target=Send, args=(group, send_queue,)) 
+                thread1.start() #소켓에 연결된 각각의 클라이언트의 메시지를 받을 쓰레드 
 
-        thread2 = threading.Thread(target=Recv, args=(conn, count,)) 
-        thread2.start()
+            thread2 = threading.Thread(target=Recv, args=(conn, count,)) 
+            thread2.start()

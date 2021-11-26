@@ -100,7 +100,7 @@ if __name__ == '__main__':
     ALARM_REPORT_JSON['AGV_NO'] = AGV_NO
 
     client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-    Port = 5000
+    Port = 5001
     client_sock.connect((Host, Port))
     
     send_thread = threading.Thread(target=Send, args=(client_sock, )) 
