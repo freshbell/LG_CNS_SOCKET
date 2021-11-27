@@ -13,6 +13,3 @@
 ##### python client.py [AGV_NO] [0:local 1:aws]
 ##### ex) local - python client.py AGV00001 0
 ##### ex) aws - python client.py AGV00001 1
-
-# 클라이언트 10개 열기
-exe 폴더 내에서 bat파일 실행
