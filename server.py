@@ -16,10 +16,11 @@ with open('./JSON/server/Move.json', 'r', encoding='UTF-8') as f:
 
 # 로그 저장 text
 now = time.strftime('20%y%m%d %H%M%S')
+
 alarm_f = open("./log/alarm/alarm" + now + ".txt","w", encoding='utf-8')
 state_f = open("./log/state/state" + now + ".txt","w", encoding='utf-8')
 
-logging.basicConfig(filename='./log/debug.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='./log/debug' + now + '.log',level=logging.DEBUG, encoding='utf-8')
 
 # thread 종료
 chk = True
