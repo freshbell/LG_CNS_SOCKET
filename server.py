@@ -21,7 +21,7 @@ alarm_f = open("./log/alarm/alarm" + now + ".txt","w", encoding='utf-8')
 state_f = open("./log/state/state" + now + ".txt","w", encoding='utf-8')
 
 logging.basicConfig(filename='./log/debug' + now + '.log',level=logging.DEBUG, encoding='utf-8')
-
+ 
 # thread 종료
 chk = True
 
