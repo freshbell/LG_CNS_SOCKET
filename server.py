@@ -126,17 +126,14 @@ if __name__ == '__main__':
     
     group = [] #연결된 클라이언트의 소켓정보를 리스트로 묶기 위함 
     while chk:
-        if count >= 10:
-            pass
-        else:
-            conn, addr = server_sock.accept() # 해당 소켓을 열고 대기 
-            group.append(conn) #연결된 클라이언트의 소켓정보 
-            count = count + 1
-            print('Connected ' + str(addr[0]) + ':' + str(addr[1])) #소켓에 연결된 모든 클라이언트에게 동일한 메시지를 보내기 위한 쓰레드(브로드캐스트) #연결된 클라이언트가 1명 이상일 경우 변경된 group 리스트로 반영 
-            logging.debug('Connected ' + str(addr[0]) + ':' + str(addr[1]))
-            if count == 1:
-                thread1 = threading.Thread(target=Send, args=(group, send_queue,)) 
-                thread1.start() #소켓에 연결된 각각의 클라이언트의 메시지를 받을 쓰레드 
+        conn, addr = server_sock.accept() # 해당 소켓을 열고 대기 
+        group.append(conn) #연결된 클라이언트의 소켓정보 
+        count = count + 1
+        print('Connected ' + str(addr[0]) + ':' + str(addr[1])) #소켓에 연결된 모든 클라이언트에게 동일한 메시지를 보내기 위한 쓰레드(브로드캐스트) #연결된 클라이언트가 1명 이상일 경우 변경된 group 리스트로 반영 
+        logging.debug('Connected ' + str(addr[0]) + ':' + str(addr[1]))
+        if count == 1:
+            thread1 = threading.Thread(target=Send, args=(group, send_queue,)) 
+            thread1.start() #소켓에 연결된 각각의 클라이언트의 메시지를 받을 쓰레드 
 
-            thread2 = threading.Thread(target=Recv, args=(conn, count,)) 
-            thread2.start()
+        thread2 = threading.Thread(target=Recv, args=(conn, count,)) 
+        thread2.start()

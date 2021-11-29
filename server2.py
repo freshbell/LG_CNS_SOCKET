@@ -47,33 +47,32 @@ def make_route():
                 break
         BLOCKS.append(str(x).zfill(4) + str(y).zfill(4))
     return BLOCKS
-
-b = []
-def Send(send_queue):
+temp = 0
+def Send():
     global clients, pr_num, group
-
+    global temp
     print('Thread Send Start') 
     while chk:
         try: #새롭게 추가된 클라이언트가 있을 경우 Send 쓰레드를 새롭게 만들기 위해 루프를 빠져나감 
+            ns = time.time_ns()
             time.sleep(0.05)
             for conn in group:
-                pr_num = pr_num + 1
-                b.append((pr_num,clients[conn]['AGV_NO']))
                 STATE_REQUEST['AGV_NO'] = clients[conn]['AGV_NO']
-                STATE_REQUEST['PRIORITY_NO'] = pr_num
+                STATE_REQUEST['PRIORITY_NO'] = pr_num + 1
                 MOVE_JSON['AGV_NO'] = clients[conn]['AGV_NO']
                 MOVE_JSON['BLOCKS'] = clients[conn]['BLOCKS']
-               
+
+                pr_num = pr_num + 1
                 state = json.dumps(STATE_REQUEST,ensure_ascii=False)
                 move = json.dumps(MOVE_JSON, ensure_ascii=False)
                 conn.send((state+move).encode())
+            print(ns - temp)
+            temp = ns
         except: 
-            pr_num = pr_num - 1
             pass 
 
 print_dic = {}
-a = []
-def Recv(conn, count):
+def Recv(conn):
     global clients, print_dic
 
     AGV_NO = conn.recv(2048).decode()
@@ -91,7 +90,6 @@ def Recv(conn, count):
             alarm_f.write(str(data) + '\n')
         
         if data_type == 'report':
-            a.append(data['PRIORITY_NO'])
             print_dic[data['PRIORITY_NO']] = str(data)
 
 chk_dic = {}
@@ -99,6 +97,7 @@ def printRecv():
     global print_dic
     pr_now = 0
     while chk:
+        time.sleep(0.05)
         if pr_now + 1 in print_dic:
             logging.info('state json -' + print_dic[pr_now+1])
             state_f.write(print_dic[pr_now+1] + '\n')
@@ -107,6 +106,7 @@ def printRecv():
 
 def input_exit_chk():
     global chk
+    
     while chk:
         exit_chk = int(input())
         if exit_chk == 0:
@@ -134,31 +134,24 @@ if __name__ == '__main__':
     count = 0
 
     # 종료 감지 스레드
-    thread3 = threading.Thread(target=input_exit_chk)
-    thread3.start()
-    
-    main_thread = threading.Thread(target=printRecv,)
-    main_thread.start()
-
-    thread1 = threading.Thread(target=Send, args=(send_queue,)) 
-    thread1.start()
+    end_thread = threading.Thread(target=input_exit_chk)
+    end_thread.start()
 
     #연결된 클라이언트의 소켓정보를 리스트로 묶기 위함 
     while chk:
+        conn, addr = server_sock.accept() # 해당 소켓을 열고 대기 
+        group.append(conn) #연결된 클라이언트의 소켓정보 
+        count = count + 1
         
-        if count >= 10:
-            pass
-        else:
-            conn, addr = server_sock.accept() # 해당 소켓을 열고 대기 
-            group.append(conn) #연결된 클라이언트의 소켓정보 
-            count = count + 1
-            
-            #소켓에 연결된 모든 클라이언트에게 동일한 메시지를 보내기 위한 쓰레드(브로드캐스트) #연결된 클라이언트가 1명 이상일 경우 변경된 group 리스트로 반영 
-            logging.debug('Connected ' + str(addr[0]) + ':' + str(addr[1]))
+        #소켓에 연결된 모든 클라이언트에게 동일한 메시지를 보내기 위한 쓰레드(브로드캐스트) #연결된 클라이언트가 1명 이상일 경우 변경된 group 리스트로 반영 
+        logging.debug('Connected ' + str(addr[0]) + ':' + str(addr[1]))
+        if count == 1:
+            thread1 = threading.Thread(target=Send, args=()) 
+            thread1.start() #소켓에 연결된 각각의 클라이언트의 메시지를 받을 쓰레드 
 
-            thread2 = threading.Thread(target=Recv, args=(conn, count,)) 
-            thread2.start()
+            print_thread = threading.Thread(target=printRecv,)
+            print_thread.start()
 
-    print(a)
-    print(b)
+        thread2 = threading.Thread(target=Recv, args=(conn,)) 
+        thread2.start()
             
