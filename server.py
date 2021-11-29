@@ -49,30 +49,29 @@ def make_route():
     return BLOCKS
 
 temp = 0
-def Send(group, send_queue):
-    global clients, pr_num, temp
+def Send( ):
+    global group
+    global clients, pr_num
 
     print('Thread Send Start') 
     while chk:
         try: #새롭게 추가된 클라이언트가 있을 경우 Send 쓰레드를 새롭게 만들기 위해 루프를 빠져나감 
             time.sleep(0.05)
             for conn in group:
-                pr_num = pr_num + 1
                 STATE_REQUEST['AGV_NO'] = clients[conn]['AGV_NO']
-                STATE_REQUEST['PRIORITY_NO'] = pr_num
+                STATE_REQUEST['PRIORITY_NO'] = pr_num + 1
                 MOVE_JSON['AGV_NO'] = clients[conn]['AGV_NO']
                 MOVE_JSON['BLOCKS'] = clients[conn]['BLOCKS']
                
+                pr_num = pr_num + 1
                 state = json.dumps(STATE_REQUEST,ensure_ascii=False)
                 move = json.dumps(MOVE_JSON, ensure_ascii=False)
                 conn.send((state+move).encode())
         except: 
             pass 
 
-pr_now = 0
-temp_dic = {}
-def Recv(conn, count):
-    global clients, pr_now, temp_dic
+def Recv(conn, ):
+    global clients, pr_now
 
     AGV_NO = conn.recv(2048).decode()
     clients[conn] = {}
@@ -132,8 +131,8 @@ if __name__ == '__main__':
         print('Connected ' + str(addr[0]) + ':' + str(addr[1])) #소켓에 연결된 모든 클라이언트에게 동일한 메시지를 보내기 위한 쓰레드(브로드캐스트) #연결된 클라이언트가 1명 이상일 경우 변경된 group 리스트로 반영 
         logging.debug('Connected ' + str(addr[0]) + ':' + str(addr[1]))
         if count == 1:
-            thread1 = threading.Thread(target=Send, args=(group, send_queue,)) 
+            thread1 = threading.Thread(target=Send, args=( )) 
             thread1.start() #소켓에 연결된 각각의 클라이언트의 메시지를 받을 쓰레드 
 
-        thread2 = threading.Thread(target=Recv, args=(conn, count,)) 
+        thread2 = threading.Thread(target=Recv, args=(conn, )) 
         thread2.start()
