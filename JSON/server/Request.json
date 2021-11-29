@@ -1,4 +1,5 @@
 {
     "DATA_TYPE":"reportRqst",
-    "AGV_NO":"AGV"
+    "AGV_NO":"AGV",
+    "PRIORITY_NO":0
 }

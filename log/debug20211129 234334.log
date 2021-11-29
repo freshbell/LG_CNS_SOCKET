@@ -1,0 +1,4 @@
+DEBUG:root:Socket Created
+DEBUG:root:Socket Bind Complete
+DEBUG:root:Socket Listening
+DEBUG:root:Connected 127.0.0.1:12087

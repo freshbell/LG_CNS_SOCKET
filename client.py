@@ -58,6 +58,7 @@ def Send(client_sock):
         send_data = json.dumps(random_alarm(),ensure_ascii=False).encode()
         client_sock.send(send_data)
 
+b = []
 def Recv(client_sock): 
     count = 0
     while True:
@@ -69,11 +70,14 @@ def Recv(client_sock):
 
         if move_data['DATA_TYPE'] == 'moveCommand':
             count = count + 1
-            if count % 10 == 0: # 500msec
+            if count % 10 == 0:
                 move_agv(move_data)
 
         if state_data['DATA_TYPE'] == 'reportRqst':
+            STATE_JSON['PRIORITY_NO'] = state_data['PRIORITY_NO']
+            b.append(state_data['PRIORITY_NO'])
             client_sock.send(json.dumps(STATE_JSON,ensure_ascii=False).encode())
+    print(b)
 
 def move_agv(move_data):
     global cnt    
